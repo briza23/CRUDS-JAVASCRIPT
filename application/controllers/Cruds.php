@@ -36,6 +36,7 @@ class Cruds extends CI_Controller {
 			'position'   =>  $_POST['position'],
 		);
 		$this->Cruds_model->add($data);
+		echo json_encode($data);
 	}
 	public function update(){
 		$id = $_POST['id'];
@@ -46,6 +47,7 @@ class Cruds extends CI_Controller {
 			'position'   =>  $_POST['position'],
 		);
 		$this->Cruds_model->update($id,$data);
+		echo json_encode($data);
 	}
 	public function delete(){
 		$id = $_POST['id'];

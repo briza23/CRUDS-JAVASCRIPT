@@ -40,7 +40,7 @@
 </head>
 <body>
 <h1 class="member-h1">Members</h1>
-<input type="text" class="pull-right search" name="search" placeholder="Search..">
+<input type="text" class="pull-right search" id="search" name="search" placeholder="Search..">
 <button type="button" class="btn btn-success"  data-toggle="modal" data-target="#addmodal">Add<i class="fa fa-plus" aria-hidden="true"></i></button>
 <div class="col-md-12">
 	<table class="table">
@@ -52,15 +52,15 @@
 	        <th>Position</th>
 	      </tr>
 	    </thead>
-	    <tbody>
+	    <tbody id="appendmember">
 	    	<?php foreach($members as $value){?>
-			<tr>
+			<tr class="tablerow">
 				<td class="first_name"><?php echo $value->first_name?></td>
 				<td class="last_name"><?php echo $value->last_name?></td>
 				<td class="email"><?php echo $value->email?></td>
 				<td class="position"><?php echo $value->position?></td>
 				<td><button type="button" class="btn btn-warning appendupdate" data-toggle="modal" data-target="#updatemodal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></td>
-				<td><button type="button" value="<?php echo $value->id?>" class="btn btn-danger id"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+				<td><button type="button" value="<?php echo $value->id?>" data-toggle="modal" data-target="#modaldelete" class="btn btn-danger id"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 				<td class="hidden id_mem"><?php echo $value->id?></td>
 			</tr>
 			<?php }?>
@@ -97,7 +97,7 @@
 	   			</div>
 			</div>
 	        <div class="modal-footer">
-	          <button type="button" class="btn btn-success" id="addmember">Add</button>
+	          <button type="button" class="btn btn-success" data-dismiss="modal" id="addmember">Add</button>
 	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        </div>
 	      </div>
@@ -136,11 +136,30 @@
 	   			</div>
 			</div>
 	        <div class="modal-footer">
-	          <button type="button" id="updatemember" class="btn btn-warning">Update</button>
+	          <button type="button" id="updatemember" data-dismiss="modal" class="btn btn-warning">Update</button>
 	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        </div>
 	      </div>
 	      
+	    </div>
+	  </div>
+	  <!-- Modal -->
+	  <div class="modal fade" id="modaldelete" role="dialog">
+	    <div class="modal-dialog modal-sm">
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title">Are you sure you want delete this member?</h4>
+	        </div>
+	        <div class="modal-body">
+	          <p id="firstlastname"></p>
+	          <input type="hidden" id="deleteid" name="">
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" id="deletemember" data-dismiss="modal" class="btn btn-danger">Delete</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
 	    </div>
 	  </div>
   
@@ -153,25 +172,85 @@
 <!-- Custom Scripts -->
 <script type="text/javascript">
 	$( document ).ready(function() {
+		
+		appendupdate();
+		appendiddelete();
+		deletefunction();
+		updatemember();
 		/*Append Update*/
-		$(".appendupdate").click(function(){
-		 	var id         = $(this).closest('tr').children('td.id_mem').text(); 
-			var first_name = $(this).closest('tr').children('td.first_name').text();  
-			var last_name  = $(this).closest('tr').children('td.last_name').text();  
-			var email      = $(this).closest('tr').children('td.email').text();  
-			var position   = $(this).closest('tr').children('td.position').text();  
-			$('#id_update').val(id);
-			$('#fname_update').val(first_name);
-			$('#lname_update').val(last_name);
-		    $('#email_update').val(email);
-			$('#position_update').val(position);  
-		});		
+		function appendupdate(){
+			$(".appendupdate").click(function(){
+			 	var id         = $(this).closest('tr').children('td.id_mem').text(); 
+				var first_name = $(this).closest('tr').children('td.first_name').text();  
+				var last_name  = $(this).closest('tr').children('td.last_name').text();  
+				var email      = $(this).closest('tr').children('td.email').text();  
+				var position   = $(this).closest('tr').children('td.position').text();  
+				$('#id_update').val(id);
+				$('#fname_update').val(first_name);
+				$('#lname_update').val(last_name);
+			    $('#email_update').val(email);
+				$('#position_update').val(position);  
+			});		
+		}	
+		/*Delete append in modal*/
+		function appendiddelete(){
+			$(".id").click(function(){
+				var id = $(this).val(); 
+				var first_name = $(this).closest('tr').children('td.first_name').text();  
+				var last_name  = $(this).closest('tr').children('td.last_name').text();  
+				$('#firstlastname').text(first_name + " " + last_name);
+				$('#deleteid').val(id);
+			});
+		}
+		/* Delete*/
+		function deletefunction(){
+			$("#deletemember").click(function(){
+				var id = $('#deleteid').val(); 
+			    $.ajax({
+		            url:"<?php echo base_url(); ?>Cruds/delete",
+		            method:"POST",
+		            data:{
+		                id: id,
+		            },
+		            success:function(data)
+		            {
+		            	location.reload();
+		            }
+		        })
+			});
+		}
+		function updatemember(){
+			$("#updatemember").click(function(){
+				var id          = $('#id_update').val();
+				var first_name  = $('#fname_update').val();
+				var last_name   = $('#lname_update').val();
+				var email       = $('#email_update').val();
+				var position    = $('#position_update').val();  
+				 
+			    $.ajax({
+		            url:"<?php echo base_url(); ?>Cruds/update",
+		            method:"POST",
+		            data:{
+		            	id		  : id,
+		                first_name: first_name,
+		                last_name : last_name,
+		                email     : email,
+		                position  : position,
+		            },
+		            success:function(data)
+		            {
+		            	location.reload();
+		            }
+		        });
+			});
+		}
+		
 		/*Add*/
 		$("#addmember").click(function(){
-			 var first_name  = $('#fname').val();
-			 var last_name   = $('#lname').val();
-			 var email       = $('#email').val();
-			 var position    = $('#position').val();  
+			var first_name  = $('#fname').val();
+			var last_name   = $('#lname').val();
+			var email       = $('#email').val();
+			var position    = $('#position').val();  
 			 
 		    $.ajax({
 	            url:"<?php echo base_url(); ?>Cruds/add",
@@ -184,46 +263,20 @@
 	            },
 	            success:function(data)
 	            {
+	            	location.reload();
 	            }
 	        });	
         });	
-		
-		/*Delete*/
-		$(".id").click(function(){
-			var id = $(this).val(); 
-		    $.ajax({
-	            url:"<?php echo base_url(); ?>Cruds/delete",
-	            method:"POST",
-	            data:{
-	                id: id,
-	            },
-	            success:function(data)
-	            {
-	            }
-	        })
-		});
-		/*Append*/
-		$("#updatemember").click(function(){
-			var id          = $('#id_update').val();
-			var first_name  = $('#fname_update').val();
-			var last_name   = $('#lname_update').val();
-			var email       = $('#email_update').val();
-			var position    = $('#position_update').val();  
-			 
-		    $.ajax({
-	            url:"<?php echo base_url(); ?>Cruds/update",
-	            method:"POST",
-	            data:{
-	            	id		  : id,
-	                first_name: first_name,
-	                last_name : last_name,
-	                email     : email,
-	                position  : position,
-	            },
-	            success:function(data)
-	            {
-	            }
-	        })
-		});
+        /*search*/
+	    $("#search").keyup(function(){
+	        _this = this;
+	        // Show only matching TR, hide rest of them
+	        $.each($(".table tbody tr"), function() {
+	            if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+	               $(this).hide();
+	            else
+	               $(this).show();                
+	        });
+	    }); 
 	});
 </script>
