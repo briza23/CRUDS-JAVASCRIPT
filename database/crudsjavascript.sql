@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 16, 2017 at 09:48 PM
+-- Generation Time: Mar 20, 2017 at 10:26 PM
 -- Server version: 10.1.9-MariaDB
 -- PHP Version: 5.6.15
 
@@ -39,8 +39,7 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `first_name`, `last_name`, `email`, `position`) VALUES
-(1, 'Jann Anthony', 'Briza', 'jannbriza@gmail.com', 'Web Developer'),
-(27, 'sadasd', 'sad', 'dsadsa', 'asdsa');
+(1, 'Jann Anthony', 'Briza', 'jannbriza@gmail.com', 'Web Developer');
 
 --
 -- Indexes for dumped tables
@@ -60,7 +59,7 @@ ALTER TABLE `members`
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
